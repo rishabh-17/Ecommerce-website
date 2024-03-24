@@ -19,7 +19,7 @@ const AdminPage = () => {
 
   const fetchProducts = () => {
     axios
-      .get(import.meta.env.VITE_BACKEND_URL + "/api/product/all")
+      .get((import.meta.env.VITE_BACKEND_URL || "") + "/api/product/all")
       .then((res) => {
         setProducts(res.data);
       })
@@ -48,7 +48,7 @@ const AdminPage = () => {
       return;
     }
     axios
-      .post(import.meta.env.VITE_BACKEND_URL + "/api/product/add", {
+      .post((import.meta.env.VITE_BACKEND_URL || "") + "/api/product/add", {
         ...formData,
         image: images?.[0],
       })
