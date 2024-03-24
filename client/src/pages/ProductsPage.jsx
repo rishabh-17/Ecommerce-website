@@ -9,7 +9,7 @@ const ProductsPage = ({ addToCart }) => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          import.meta.env.VITE_BACKEND_URL + "/api/product/all"
+          (import.meta.env.VITE_BACKEND_URL || "") + "/api/product/all"
         );
         setProducts(response.data);
       } catch (error) {
