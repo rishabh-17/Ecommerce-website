@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { CheckoutModel } from "../components";
+import { Alert } from "../utils/Alert";
 
 const CartPage = ({ cart, setCart }) => {
+  const [showModal, setShowModal] = useState(false);
+
   const removeFromCart = (productId) => {
     try {
       const updatedCart = cart.filter((item) => item._id !== productId);
@@ -43,14 +47,22 @@ const CartPage = ({ cart, setCart }) => {
     });
   }
 
-  async function displayRazorpay() {
+  const handleModal = () => {
+    if (cart?.length) {
+      setShowModal(true);
+    } else {
+      Alert("error", "Cart is empty");
+    }
+  };
+
+  async function displayRazorpay(buyerDetail) {
     try {
       const res = await loadScript(
         "https://checkout.razorpay.com/v1/checkout.js"
       );
 
       if (!res) {
-        alert("Razorpay SDK failed to load. Are you online?");
+        Alert("Razorpay SDK failed to load. Are you online?");
         return;
       }
 
@@ -65,7 +77,7 @@ const CartPage = ({ cart, setCart }) => {
       );
 
       if (!result) {
-        alert("Server error. Are you online?");
+        Alert("Server error. Are you online?");
         return;
       }
 
@@ -93,12 +105,14 @@ const CartPage = ({ cart, setCart }) => {
             {
               paymentDetails: data,
               cart,
+              buyerDetail,
             }
           );
           setCart([]);
+          setShowModal(false);
           localStorage.setItem("cart", JSON.stringify([]));
 
-          alert(result.data.msg);
+          Alert(result.data.msg);
         },
         prefill: {
           name: "Vowel web",
@@ -119,14 +133,6 @@ const CartPage = ({ cart, setCart }) => {
       Alert("error", "Error displaying Razorpay");
     }
   }
-
-  const Alert = (type, message) => {
-    if (type === "error") {
-      alert(`Error: ${message}`);
-    } else if (type === "success") {
-      alert(`Success: ${message}`);
-    }
-  };
 
   return (
     <div className="container mx-auto px-10">
@@ -176,13 +182,18 @@ const CartPage = ({ cart, setCart }) => {
             </p>
             <button
               className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-              onClick={() => displayRazorpay()}
+              onClick={handleModal}
             >
               Proceed to Pay
             </button>
           </div>
         </div>
       </div>
+      <CheckoutModel
+        showModal={showModal}
+        setShowModal={setShowModal}
+        displayRazorpay={displayRazorpay}
+      />
     </div>
   );
 };

@@ -4,8 +4,6 @@ import { Alert } from "../utils/Alert";
 
 const OrderHistoryPage = () => {
   const [orders, setOrders] = useState([]);
-  // Alert("success", "fsffdgsdfgfsgfs");
-  // Alert("error", "fsffdgsdfgfsgfs");
   useEffect(() => {
     axios
       .get((import.meta.env.VITE_BACKEND_URL || "") + "/api/orders/all")
@@ -31,6 +29,9 @@ const OrderHistoryPage = () => {
           >
             <h2 className="text-xl font-semibold">Order #{order._id}</h2>
             <p>Total Price: ${order.totalPrice}</p>
+            <p>Name: {order.name}</p>
+            <p>Address: {order.address}</p>
+            <p>City: {order.city}</p>
             <p>Order Date: {new Date(order.createdAt).toLocaleString()}</p>
             <h3 className="text-lg font-semibold">Products</h3>
             {order?.products?.map((item) => (

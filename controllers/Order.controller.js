@@ -30,8 +30,12 @@ exports.payment = async (req, res) => {
 
 exports.addOrder = (req, res) => {
   try {
-    const { cart, paymentDetails } = req.body;
+    const { cart, paymentDetails, buyerDetail } = req.body;
+    console.log(cart, paymentDetails, buyerDetail);
     const newOrder = new Order({
+      name: buyerDetail.firstName + " " + buyerDetail.lastName,
+      address: buyerDetail.address,
+      city: buyerDetail.city,
       products: cart,
       totalPrice: cart.reduce(
         (acc, item) => acc + item.price * item.quantity,
